@@ -59,16 +59,16 @@ O backend utiliza:
 
 Implementado para proteger o fluxo OAuth/OIDC contra interceptação do `authorization_code`.
 
-#### Funcionamento
+### Funcionamento
 
-##### 1. Backend gera:
+### 1. Backend gera:
 
 - `code_verifier`
 - `code_challenge`
 
 ---
 
-##### 2. `code_challenge` é enviado ao Keycloak
+### 2. `code_challenge` é enviado ao Keycloak
 
 ```text
 GET /auth
@@ -77,7 +77,7 @@ GET /auth
 
 ---
 
-##### 3. Após login
+### 3. Após login
 
 Keycloak retorna:
 
@@ -87,7 +87,7 @@ Keycloak retorna:
 
 ---
 
-##### 4. Backend envia
+### 4. Backend envia
 
 - `authorization_code`
 - `code_verifier`
@@ -96,7 +96,7 @@ para o endpoint `/token`.
 
 ---
 
-##### 5. Keycloak valida
+### 5. Keycloak valida
 
 ```text
 SHA256(code_verifier) === code_challenge
@@ -104,7 +104,7 @@ SHA256(code_verifier) === code_challenge
 
 ---
 
-##### Benefícios
+### Benefícios
 
 - impede reutilização do authorization code
 - protege contra replay/interceptação
@@ -117,14 +117,14 @@ SHA256(code_verifier) === code_challenge
 
 Implementação de proteção CSRF específica do fluxo OAuth/OIDC.
 
-#### Funcionamento
+### Funcionamento
 
 - Backend gera `state` aleatório usando `crypto.randomBytes`
 - `state` é armazenado na sessão
 - Keycloak retorna o mesmo `state` no callback
 - Backend valida o valor antes da autenticação
 
-#### Protege contra
+### Protege contra
 
 - login CSRF
 - OAuth callback injection
@@ -137,7 +137,7 @@ Implementação de proteção CSRF específica do fluxo OAuth/OIDC.
 
 O backend renova tokens automaticamente sem interação do usuário.
 
-#### Funcionamento
+### Funcionamento
 
 1. Access token expira
 2. Backend utiliza refresh token armazenado na sessão
@@ -146,7 +146,7 @@ O backend renova tokens automaticamente sem interação do usuário.
 
 ---
 
-#### Benefícios
+### Benefícios
 
 - melhora UX
 - evita logout frequente
@@ -159,7 +159,7 @@ O backend renova tokens automaticamente sem interação do usuário.
 
 Sessões e tokens são armazenados no Redis.
 
-#### Benefícios
+### Benefícios
 
 - compartilhamento de sessões entre múltiplas instâncias
 - escalabilidade horizontal
@@ -169,7 +169,7 @@ Sessões e tokens são armazenados no Redis.
 
 ---
 
-#### Utilizações
+### Utilizações
 
 - sessões OIDC
 - refresh tokens
@@ -189,7 +189,7 @@ Sessões utilizam cookies:
 - `sameSite`
 - não acessíveis via JavaScript
 
-#### Benefícios
+### Benefícios
 
 - reduz risco de XSS roubar tokens
 - protege credenciais no browser
@@ -209,7 +209,7 @@ Implementação via `csurf`.
 
 ---
 
-##### Endpoint
+### Endpoint
 
 ```http
 GET /auth/csrf
@@ -217,7 +217,7 @@ GET /auth/csrf
 
 ---
 
-##### Retorno
+### Retorno
 
 ```json
 {
@@ -227,7 +227,7 @@ GET /auth/csrf
 
 ---
 
-##### Frontend
+### Frontend
 
 O frontend deve enviar:
 
@@ -255,7 +255,7 @@ Proteção contra:
 
 ---
 
-#### Aplicado principalmente em:
+### Aplicado principalmente em:
 
 - `/auth/login`
 - `/auth/callback`
@@ -440,7 +440,7 @@ Responsável por:
 GET /auth/csrf
 ```
 
-#### Retorno
+### Retorno
 
 ```json
 {
