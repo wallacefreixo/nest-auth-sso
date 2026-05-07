@@ -18,7 +18,7 @@
 
 ---
 
-# 🔐 Arquitetura de autenticação
+## 🔐 Arquitetura de autenticação
 
 A autenticação segue o padrão:
 
@@ -39,9 +39,9 @@ O backend é responsável por:
 
 ---
 
-# 🔐 Principais implementações de segurança
+## 🔐 Principais implementações de segurança
 
-## OIDC Authorization Code Flow
+### OIDC Authorization Code Flow
 
 Fluxo moderno recomendado para aplicações web.
 
@@ -55,20 +55,20 @@ O backend utiliza:
 
 ---
 
-# 🔐 PKCE (Proof Key for Code Exchange)
+### 🔐 PKCE (Proof Key for Code Exchange)
 
 Implementado para proteger o fluxo OAuth/OIDC contra interceptação do `authorization_code`.
 
-## Funcionamento
+#### Funcionamento
 
-### 1. Backend gera:
+##### 1. Backend gera:
 
 - `code_verifier`
 - `code_challenge`
 
 ---
 
-### 2. `code_challenge` é enviado ao Keycloak
+##### 2. `code_challenge` é enviado ao Keycloak
 
 ```text
 GET /auth
@@ -77,7 +77,7 @@ GET /auth
 
 ---
 
-### 3. Após login
+##### 3. Após login
 
 Keycloak retorna:
 
@@ -87,7 +87,7 @@ Keycloak retorna:
 
 ---
 
-### 4. Backend envia
+##### 4. Backend envia
 
 - `authorization_code`
 - `code_verifier`
@@ -96,7 +96,7 @@ para o endpoint `/token`.
 
 ---
 
-### 5. Keycloak valida
+##### 5. Keycloak valida
 
 ```text
 SHA256(code_verifier) === code_challenge
@@ -104,7 +104,7 @@ SHA256(code_verifier) === code_challenge
 
 ---
 
-## Benefícios
+##### Benefícios
 
 - impede reutilização do authorization code
 - protege contra replay/interceptação
@@ -113,18 +113,18 @@ SHA256(code_verifier) === code_challenge
 
 ---
 
-# 🔐 State Parameter (Proteção CSRF OIDC)
+### 🔐 State Parameter (Proteção CSRF OIDC)
 
 Implementação de proteção CSRF específica do fluxo OAuth/OIDC.
 
-## Funcionamento
+#### Funcionamento
 
 - Backend gera `state` aleatório usando `crypto.randomBytes`
 - `state` é armazenado na sessão
 - Keycloak retorna o mesmo `state` no callback
 - Backend valida o valor antes da autenticação
 
-## Protege contra
+#### Protege contra
 
 - login CSRF
 - OAuth callback injection
@@ -133,11 +133,11 @@ Implementação de proteção CSRF específica do fluxo OAuth/OIDC.
 
 ---
 
-# 🔄 Refresh Silencioso (Silent Refresh)
+### 🔄 Refresh Silencioso (Silent Refresh)
 
 O backend renova tokens automaticamente sem interação do usuário.
 
-## Funcionamento
+#### Funcionamento
 
 1. Access token expira
 2. Backend utiliza refresh token armazenado na sessão
@@ -146,7 +146,7 @@ O backend renova tokens automaticamente sem interação do usuário.
 
 ---
 
-## Benefícios
+#### Benefícios
 
 - melhora UX
 - evita logout frequente
@@ -155,11 +155,11 @@ O backend renova tokens automaticamente sem interação do usuário.
 
 ---
 
-# 🗄 Redis Session Storage
+### 🗄 Redis Session Storage
 
 Sessões e tokens são armazenados no Redis.
 
-## Benefícios
+#### Benefícios
 
 - compartilhamento de sessões entre múltiplas instâncias
 - escalabilidade horizontal
@@ -169,7 +169,7 @@ Sessões e tokens são armazenados no Redis.
 
 ---
 
-## Utilizações
+#### Utilizações
 
 - sessões OIDC
 - refresh tokens
@@ -180,7 +180,7 @@ Sessões e tokens são armazenados no Redis.
 
 ---
 
-# 🍪 Cookies HTTP-only
+### 🍪 Cookies HTTP-only
 
 Sessões utilizam cookies:
 
@@ -189,7 +189,7 @@ Sessões utilizam cookies:
 - `sameSite`
 - não acessíveis via JavaScript
 
-## Benefícios
+#### Benefícios
 
 - reduz risco de XSS roubar tokens
 - protege credenciais no browser
@@ -197,11 +197,11 @@ Sessões utilizam cookies:
 
 ---
 
-# 🛡 CSRF Protection
+### 🛡 CSRF Protection
 
 Implementação via `csurf`.
 
-## Funcionamento
+#### Funcionamento
 
 - Backend gera token CSRF
 - Frontend envia token no header `X-XSRF-TOKEN`
@@ -209,7 +209,7 @@ Implementação via `csurf`.
 
 ---
 
-## Endpoint
+##### Endpoint
 
 ```http
 GET /auth/csrf
@@ -217,7 +217,7 @@ GET /auth/csrf
 
 ---
 
-## Retorno
+##### Retorno
 
 ```json
 {
@@ -227,7 +227,7 @@ GET /auth/csrf
 
 ---
 
-## Frontend
+##### Frontend
 
 O frontend deve enviar:
 
@@ -244,7 +244,7 @@ em requisições:
 
 ---
 
-# 🚦 Rate Limiting (@nestjs/throttler)
+### 🚦 Rate Limiting (@nestjs/throttler)
 
 Proteção contra:
 
@@ -255,14 +255,14 @@ Proteção contra:
 
 ---
 
-## Aplicado principalmente em:
+#### Aplicado principalmente em:
 
 - `/auth/login`
 - `/auth/callback`
 
 ---
 
-# 🪖 Helmet
+### 🪖 Helmet
 
 Configuração automática de headers de segurança:
 
@@ -273,7 +273,7 @@ Configuração automática de headers de segurança:
 
 ---
 
-# 🌐 CORS configurado
+### 🌐 CORS configurado
 
 - origin restrito ao frontend
 - `credentials: true`
@@ -281,7 +281,7 @@ Configuração automática de headers de segurança:
 
 ---
 
-# ⚙️ Requisitos
+## ⚙️ Requisitos
 
 - Node.js >= 20
 - NPM >= 9
@@ -291,7 +291,7 @@ Configuração automática de headers de segurança:
 
 ---
 
-# 🔧 Instalação
+## 🔧 Instalação
 
 ```bash
 git clone <repo-url>
@@ -301,7 +301,7 @@ npm install
 
 ---
 
-# 🌐 Variáveis de ambiente
+## 🌐 Variáveis de ambiente
 
 Crie um `.env`:
 
@@ -326,9 +326,9 @@ NODE_ENV=development
 
 ---
 
-# 🗄 Configuração do PostgreSQL e Redis
+## 🗄 Configuração do PostgreSQL e Redis
 
-## PostgreSQL
+### PostgreSQL
 
 ```bash
 docker run --name nest-postgres-sso \
@@ -341,7 +341,7 @@ docker run --name nest-postgres-sso \
 
 ---
 
-## Redis
+### Redis
 
 ```bash
 docker run --name nest-redis-sso \
@@ -351,9 +351,9 @@ docker run --name nest-redis-sso \
 
 ---
 
-# 🚀 Executando o backend
+## 🚀 Executando o backend
 
-## Desenvolvimento
+### Desenvolvimento
 
 ```bash
 npm run dev
@@ -361,7 +361,7 @@ npm run dev
 
 ---
 
-## Produção
+### Produção
 
 ```bash
 npm run build
@@ -370,9 +370,9 @@ npm run start
 
 ---
 
-# 🔑 Endpoints principais
+## 🔑 Endpoints principais
 
-# 1️⃣ Login OIDC
+### 1️⃣ Login OIDC
 
 ```http
 GET /auth/login
@@ -386,7 +386,7 @@ Redireciona para o Keycloak iniciando:
 
 ---
 
-# 2️⃣ Callback OIDC
+### 2️⃣ Callback OIDC
 
 ```http
 GET /auth/callback
@@ -401,13 +401,13 @@ Responsável por:
 
 ---
 
-# 3️⃣ Sessão autenticada
+### 3️⃣ Sessão autenticada
 
 ```http
 GET /auth/session
 ```
 
-## Retorno
+#### Retorno
 
 ```json
 {
@@ -421,7 +421,7 @@ GET /auth/session
 
 ---
 
-# 4️⃣ Logout
+### 4️⃣ Logout
 
 ```http
 POST /auth/logout
@@ -434,13 +434,13 @@ Responsável por:
 
 ---
 
-# 5️⃣ Token CSRF
+### 5️⃣ Token CSRF
 
 ```http
 GET /auth/csrf
 ```
 
-## Retorno
+#### Retorno
 
 ```json
 {
@@ -450,7 +450,7 @@ GET /auth/csrf
 
 ---
 
-# 🔒 Rotas protegidas
+## 🔒 Rotas protegidas
 
 Exemplo:
 
@@ -472,7 +472,7 @@ Apenas usuários autenticados podem acessar.
 
 ---
 
-# 📌 Fluxo resumido de autenticação
+## 📌 Fluxo resumido de autenticação
 
 ```text
 1. Frontend chama /auth/login
